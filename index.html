@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+  <title>My Page</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+</head> 
+<body> 
+
+<div data-role="page">
+
+  <div data-role="header">
+    <h1>My Title</h1>
+  </div><!-- /header -->
+
+  <div data-role="content"> 
+    <p>Hello world</p>    
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+
+<script>
+if (navigator.geolocation) {
+  var timeoutVal = 10 * 1000 * 1000;
+  navigator.geolocation.getCurrentPosition(
+    getZipcode, 
+    displayError,
+    { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+  );
+}
+else {
+  alert("Geolocation is not supported by this browser");
+}
+
+function getZipcode(position) {
+  $.getJSON( "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude, function( data ) {
+    var user_zipcode = data.results[0].address_components[7].short_name
+    localFoods(user_zipcode)
+    
+  });
+}
+
+function displayError(error) {
+  var errors = { 
+    1: 'Permission denied',
+    2: 'Position unavailable',
+    3: 'Request timeout'
+  };
+  alert("Error: " + errors[error.code]);
+}
+
+function localFoods(user_zipcode) {
+  console.log("TESTING" + user_zipcode)
+  $.ajax({
+    "url":"https://www.kimonolabs.com/api/21y8a2sa?apikey=Bd2gV40nhcS2JS9aK2slJ56DSpbGlMhh&kimpath4=" + user_zipcode + "&callback=kimonoCallback",
+    "crossDomain":true,
+    "dataType":"jsonp"
+  });
+}
+
+function kimonoCallback(data) {
+  var limit = 12
+  for (i = 0; i < limit; i++) {
+    console.log(data.results.collection1[i].FoodImage.src)
+  }
+}
+
+  
+</script>
+</html>
+
