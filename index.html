@@ -2,10 +2,15 @@
 <html> 
   <head> 
   <title>My Page</title> 
+  <!-- jQuery UI to Mobile conversion: http://touchpunch.furf.com/ -->
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+  <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+  <style>
+
+  </style>
 </head> 
 <body> 
 
@@ -18,12 +23,22 @@
   <div data-role="content"> 
     <p>Hello world</p>    
   </div><!-- /content -->
-
+  <div id="swipe-container">
+    
+  </div>
+  <div id="button-container">
+    <button id="swipe-decline" data-inline="true">Crap!</button>
+    <button id="swipe-accept"  data-inline="true">Tasty!</button>
+  </div>
 </div><!-- /page -->
 
 </body>
 
 <script>
+var foodIndex = 0
+
+var foodImageArray = [];
+
 if (navigator.geolocation) {
   var timeoutVal = 10 * 1000 * 1000;
   navigator.geolocation.getCurrentPosition(
@@ -65,9 +80,35 @@ function localFoods(user_zipcode) {
 function kimonoCallback(data) {
   var limit = 8
   for (i = 0; i < limit; i++) {
-    console.log(data.results.collection1[i].FoodImage.src)
+    console.log(data.results.collection1)
+    var foodImage = data.results.collection1[i].FoodImage.src
+    foodImageArray.push(foodImage)
   }
 }
+
+$("#swipe-decline").click(function () {
+  imageAdvancer(foodIndex)
+  foodIndex++
+})
+
+$("#swipe-accept").click(function () {
+  imageAdvancer(foodIndex)
+  foodIndex++
+})
+
+function imageAdvancer (foodIndex) {
+  var foodImage = foodImageArray[foodIndex]
+
+  foodImageCreator(foodImage)
+}
+
+function foodImageCreator(foodImage) {
+  $(".food-image").remove()
+  $( "<p class='food-image'><img src='" + foodImage + "'</p>" ).draggable( { appendTo: $( "#swipe-container" )} );
+}
+setTimeout(function () {
+  imageAdvancer(foodIndex);
+}, 10000)
 
   
 </script>
