@@ -17,19 +17,21 @@
 <div data-role="page">
 
   <div data-role="header">
-    <h1>My Title</h1>
+    <h1>FoodSwipe</h1>
   </div><!-- /header -->
 
-  <div data-role="content"> 
-    <p>Hello world</p>    
-  </div><!-- /content -->
-  <div id="swipe-container">
-    
+  <div data-role="content">  
+    <div id="swipe-container">
+    <div id="loading-screen">
+      <img src="http://i.imgur.com/Tony9TT.gif" />
+      <h3>Loading food for your fat ass...</h3>
+    </div>
   </div>
   <div id="button-container">
     <button id="swipe-decline" data-inline="true">Crap!</button>
     <button id="swipe-accept"  data-inline="true">Tasty!</button>
-  </div>
+  </div>  
+  </div><!-- /content -->
 </div><!-- /page -->
 
 </body>
@@ -53,10 +55,10 @@ else {
 
 function getZipcode(position) {
   $.getJSON( "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude, function( data ) {
-    var user_zipcode = data.results[0].address_components[7].short_name
+    var user_zipcode = data.results[0].formatted_address
     localFoods(user_zipcode)
-    
   });
+  
 }
 
 function displayError(error) {
@@ -69,7 +71,7 @@ function displayError(error) {
 }
 
 function localFoods(user_zipcode) {
-  console.log("TESTING" + user_zipcode)
+  // console.log("TESTING" + user_zipcode)
   $.ajax({
     "url":"https://www.kimonolabs.com/api/21y8a2sa?apikey=Bd2gV40nhcS2JS9aK2slJ56DSpbGlMhh&kimpath4=" + user_zipcode + "&callback=kimonoCallback",
     "crossDomain":true,
@@ -80,10 +82,10 @@ function localFoods(user_zipcode) {
 function kimonoCallback(data) {
   var limit = 8
   for (i = 0; i < limit; i++) {
-    console.log(data.results.collection1)
     var foodImage = data.results.collection1[i].FoodImage.src
     foodImageArray.push(foodImage)
   }
+  imageAdvancer(foodIndex)
 }
 
 $("#swipe-decline").click(function () {
@@ -97,18 +99,19 @@ $("#swipe-accept").click(function () {
 })
 
 function imageAdvancer (foodIndex) {
+
+
   var foodImage = foodImageArray[foodIndex]
 
   foodImageCreator(foodImage)
 }
 
 function foodImageCreator(foodImage) {
+
   $(".food-image").remove()
-  $( "<p class='food-image'><img src='" + foodImage + "'</p>" ).draggable( { appendTo: $( "#swipe-container" )} );
+  $("#loading-screen").remove()
+  $( "<p class='food-image'><img src='" + foodImage + "'</p>" ).appendTo( $( "#swipe-container" ) );
 }
-setTimeout(function () {
-  imageAdvancer(foodIndex);
-}, 10000)
 
   
 </script>
