@@ -3,11 +3,10 @@
   <head> 
   <title>My Page</title> 
   <!-- jQuery UI to Mobile conversion: http://touchpunch.furf.com/ -->
-  <meta name="viewport" content="width=device-width, initial-scale=1"> 
-  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
-  <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-  <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
   <style>
 
   </style>
@@ -15,7 +14,13 @@
 <body> 
 
 <div data-role="page">
-
+  <div data-role="main" class="ui-content">
+    <a href="#myPopup" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all">Show Popup</a>
+    
+    <div data-role="popup" id="myPopup">
+      <p>This is a simple popup.</p>
+    </div>
+  </div>
   <div data-role="header">
     <h1>FoodSwipe</h1>
   </div><!-- /header -->
@@ -38,7 +43,7 @@
 
 <script>
 var foodIndex = 0
-
+var likedFoodsArray = [];
 var foodImageArray = [];
 
 if (navigator.geolocation) {
@@ -82,7 +87,8 @@ function localFoods(user_zipcode) {
 function kimonoCallback(data) {
   var limit = 8
   for (i = 0; i < limit; i++) {
-    var foodImage = data.results.collection1[i].FoodImage.src
+    var foodImage = data.results.collection1[i]
+    var foodPlace = data.results.collection1[i].FoodPlace[1].text
     foodImageArray.push(foodImage)
   }
   imageAdvancer(foodIndex)
@@ -94,15 +100,19 @@ $("#swipe-decline").click(function () {
 })
 
 $("#swipe-accept").click(function () {
+  var foodPlace = foodImageArray[foodIndex].FoodPlace[1].text
+  if ($.inArray( foodPlace, likedFoodsArray ) != -1 && likedFoodsArray.length != 0) {
+    console.log("MATCH! MATCH!")
+
+    $( "#match-selector" ).popup({ transition: "pop" });
+  } 
+  likedFoodsArray.push(foodPlace)
   imageAdvancer(foodIndex)
   foodIndex++
 })
 
 function imageAdvancer (foodIndex) {
-
-
   var foodImage = foodImageArray[foodIndex]
-
   foodImageCreator(foodImage)
 }
 
@@ -110,7 +120,7 @@ function foodImageCreator(foodImage) {
 
   $(".food-image").remove()
   $("#loading-screen").remove()
-  $( "<p class='food-image'><img src='" + foodImage + "'</p>" ).appendTo( $( "#swipe-container" ) );
+  $( "<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>" ).appendTo( $( "#swipe-container" ) );
 }
 
   
