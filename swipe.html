@@ -1,0 +1,131 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+  <title>My Page</title> 
+  <!-- jQuery UI to Mobile conversion: http://touchpunch.furf.com/ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+  <script type="text/javascript" src="TouchSwipe-Jquery-Plugin/jquery.touchSwipe.min.js"></script>
+  <script type="text/javascript" src="jQueryRotateCompressed.js"></script>
+  <style>
+  .box{
+  	margin-top: 20px;
+	margin-bottom: 20px;
+	max-width: 768px;
+	height: 450px;
+	padding: 10px;
+	background-color: #EEE;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	text-align: center;
+	font-weight: 300;
+	font-size: 20px;
+	line-height: 36px;
+	overflow: hidden;
+  }
+
+  #food-eval-crap, #food-eval-tasty {
+  	margin-top: -50px;
+  }
+  </style>
+</head> 
+<body>
+  <div id="test" class="box">
+  	<div id="drag-test">
+  		<img src="http://www.newingtonpizza.com/flash/slides/Newington-Pizza-Restaurant-Newington-01.jpg">
+  		<p id="food-eval-crap">Crap!</p>
+  		<p id="food-eval-tasty">Tasty!</p>
+  	</div>
+  </div>
+
+  <script>
+  $( "#food-eval-crap" ).hide()
+  $( "#food-eval-tasty" ).hide()
+
+  $( "#drag-test" ).draggable() 
+  	$(function() {        
+        $("#test").swipe( {
+          swipe:function(event, direction) {
+            console.log("You swiped " + direction );
+            if (direction === "left") {
+            	console.log("TESTING LEFT LEFT LEFT");
+            	$("#drag-test").animate({right: '100%',}, 600)
+            } else if (direction === "right") {
+            	console.log("RIGHT RIGHT RITE TESTINGGGGG")
+            	$("#drag-test").animate({left: '100%',}, 600)
+            }
+          },
+          swipeStatus:function(event, phase, direction, distance, duration, fingers) {
+            
+
+
+            
+            if (direction === "left") {
+            	$("#drag-test").rotate( -distance * .3 );
+            	$( "#food-eval-crap" ).show()
+  				$( "#food-eval-tasty" ).hide()
+            } else if (direction === "right") {
+            	$("#drag-test").rotate( distance * .3 );
+            	$( "#food-eval-crap" ).hide()
+  				$( "#food-eval-tasty" ).show()
+            }
+
+            switch (true) {
+            	case  distance <= 10:
+	            	$("#drag-test").fadeTo(0, .9)
+	            	console.log("test1")
+	            	break;
+	            case distance > 10 && distance <= 20:
+	            	$("#drag-test").fadeTo(0, .8)
+	            	console.log("test2")
+	            	break;
+	            case distance > 20 && distance <= 30:
+	            	$("#drag-test").fadeTo(0, .7)
+	            	console.log("test3")
+	            	break;
+	            case distance > 30 && distance <= 40:
+	            	$("#drag-test").fadeTo(0, .6)
+	            	console.log("test4")
+	            	break;
+	            case distance > 40 && distance <= 50:
+	            	$("#drag-test").fadeTo(0, .5)
+	            	break;
+	            case distance > 50 && distance <= 60:
+	            	$("#drag-test").fadeTo(0, .4)
+	            	break;
+	            case distance > 60 && distance <= 70:
+	            	$("#drag-test").fadeTo(0, .3)
+	            	break;
+	            case distance > 70 && distance <= 80:
+	            	$("#drag-test").fadeTo(0, .2)
+	            	break;
+	            case distance > 80 && distance <= 90:
+	            	$("#drag-test").fadeTo(0, .1)
+	            	break;
+	            case distance > 90 && distance <= 100:
+	            	$("#drag-test").fadeTo(0, 0)
+	            	break;
+            }
+            
+            if(distance>200) {
+                console.log(" Now swipe back 10px and release to cancel.. distance = " + distance + "px");
+
+            }
+            
+            if (phase=="cancel") {
+              console.log(" You cancelled the swipe");
+            }
+          },
+          threshold:30,
+          cancelThreshold:10
+          
+        });
+      });
+    
+  </script>
+</body>
+</html>
