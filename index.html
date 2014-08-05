@@ -15,11 +15,8 @@
 
 <div data-role="page">
   <div data-role="main" class="ui-content">
-    <a href="#myPopup" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all">Show Popup</a>
     
-    <div data-role="popup" id="myPopup">
-      <p>This is a simple popup.</p>
-    </div>
+    
   </div>
   <div data-role="header">
     <h1>FoodSwipe</h1>
@@ -35,6 +32,10 @@
   <div id="button-container">
     <button id="swipe-decline" data-inline="true">Crap!</button>
     <button id="swipe-accept"  data-inline="true">Tasty!</button>
+    <a href="#myPopup" data-transition="slidefade" data-rel="popup" data-position-to="window" data-inline="true" data-corners="true" data-shadow="true" data-iconshadow="true" ></a>
+    <div data-role="popup" id="myPopup">
+      <p>We found you a place to eat! Yahoo!</p>
+    </div>
   </div>  
   </div><!-- /content -->
 </div><!-- /page -->
@@ -89,6 +90,7 @@ function kimonoCallback(data) {
   for (i = 0; i < limit; i++) {
     var foodImage = data.results.collection1[i]
     var foodPlace = data.results.collection1[i].FoodPlace[1].text
+    console.log(foodImage.FoodImage.alt)
     foodImageArray.push(foodImage)
   }
   imageAdvancer(foodIndex)
@@ -100,10 +102,14 @@ $("#swipe-decline").click(function () {
 })
 
 $("#swipe-accept").click(function () {
+  var foodImage = foodImageArray[foodIndex].FoodImage.src
+  var foodText = foodImageArray[foodIndex].FoodImage.alt
   var foodPlace = foodImageArray[foodIndex].FoodPlace[1].text
   if ($.inArray( foodPlace, likedFoodsArray ) != -1 && likedFoodsArray.length != 0) {
     console.log("MATCH! MATCH!")
-
+    $( "#myPopup" ).text(foodText)
+    $( "#myPopup" ).prepend("<img src='" + foodImage + "' />")
+    $( "#myPopup" ).popup( "open" );
     $( "#match-selector" ).popup({ transition: "pop" });
   } 
   likedFoodsArray.push(foodPlace)
