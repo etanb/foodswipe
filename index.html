@@ -6,9 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
   <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+  <script type="text/javascript" src="TouchSwipe-Jquery-Plugin/jquery.touchSwipe.min.js"></script>
+  <script type="text/javascript" src="jQueryRotateCompressed.js"></script>
   <style>
-
+    #food-eval-crap, #food-eval-tasty {
+      margin-top: -50px;
+    }
   </style>
 </head> 
 <body> 
@@ -22,13 +27,15 @@
     <h1>FoodSwipe</h1>
   </div><!-- /header -->
 
-  <div data-role="content">  
-    <div id="swipe-container">
-    <div id="loading-screen">
-      <img src="http://i.imgur.com/Tony9TT.gif" />
-      <h3>Loading food for your fat ass...</h3>
-    </div>
-  </div>
+  <center><div id="master-container" data-role="content">  
+      <div id="swipe-container">
+        <div id="loading-screen">
+          <img src="http://i.imgur.com/Tony9TT.gif" />
+          <h3>Loading food for your fat ass...</h3>
+          <p id="food-eval-crap">Crap!</p>
+          <p id="food-eval-tasty">Tasty!</p>
+        </div>
+      </div>
   <div id="button-container">
     <button id="swipe-decline" data-inline="true">Crap!</button>
     <button id="swipe-accept"  data-inline="true">Tasty!</button>
@@ -37,7 +44,7 @@
       <p>We found you a place to eat! Yahoo!</p>
     </div>
   </div>  
-  </div><!-- /content -->
+  </div></center><!-- /content -->
 </div><!-- /page -->
 
 </body>
@@ -125,11 +132,98 @@ function imageAdvancer (foodIndex) {
 function foodImageCreator(foodImage) {
 
   $(".food-image").remove()
+  $("#swipe-container").remove()
   $("#loading-screen").remove()
-  $( "<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>" ).appendTo( $( "#swipe-container" ) );
+  $("<div id='swipe-container'></div>").insertBefore($("#button-container"))
+  swipeAble()
+  $("<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>").appendTo($("#swipe-container"));
 }
 
-  
+// logic for image swiping
+$( "#food-eval-crap" ).hide()
+$( "#food-eval-tasty" ).hide()
+function swipeAble() {
+  $( "#swipe-container" ).draggable() 
+    $(function() {        
+        $("#swipe-container").swipe( {
+          swipe:function(event, direction) {
+            console.log("You swiped " + direction );
+            if (direction === "left") {
+              console.log("TESTING LEFT LEFT LEFT");
+              $("#swipe-container").animate({right: '100%',}, 600)
+            } else if (direction === "right") {
+              console.log("RIGHT RIGHT RITE TESTINGGGGG")
+              $("#swipe-container").animate({left: '100%',}, 600)
+            }
+          },
+          swipeStatus:function(event, phase, direction, distance, duration, fingers) {
+            
+
+
+            
+            if (direction === "left") {
+              $("#swipe-container").rotate( -distance * .3 );
+              $( "#food-eval-crap" ).show()
+          $( "#food-eval-tasty" ).hide()
+            } else if (direction === "right") {
+              $("#swipe-container").rotate( distance * .3 );
+              $( "#food-eval-crap" ).hide()
+          $( "#food-eval-tasty" ).show()
+            }
+
+            switch (true) {
+              case  distance <= 10:
+                $("#swipe-container").fadeTo(0, .9)
+                console.log("test1")
+                break;
+              case distance > 10 && distance <= 20:
+                $("#swipe-container").fadeTo(0, .8)
+                console.log("test2")
+                break;
+              case distance > 20 && distance <= 30:
+                $("#swipe-container").fadeTo(0, .7)
+                console.log("test3")
+                break;
+              case distance > 30 && distance <= 40:
+                $("#swipe-container").fadeTo(0, .6)
+                console.log("test4")
+                break;
+              case distance > 40 && distance <= 50:
+                $("#swipe-container").fadeTo(0, .5)
+                break;
+              case distance > 50 && distance <= 60:
+                $("#swipe-container").fadeTo(0, .4)
+                break;
+              case distance > 60 && distance <= 70:
+                $("#swipe-container").fadeTo(0, .3)
+                break;
+              case distance > 70 && distance <= 80:
+                $("#swipe-container").fadeTo(0, .2)
+                break;
+              case distance > 80 && distance <= 90:
+                $("#swipe-container").fadeTo(0, .1)
+                break;
+              case distance > 90 && distance <= 100:
+                $("#swipe-container").fadeTo(0, 0)
+                break;
+            }
+            
+            if(distance>200) {
+                console.log(" Now swipe back 10px and release to cancel.. distance = " + distance + "px");
+
+            }
+            
+            if (phase=="cancel") {
+              console.log(" You cancelled the swipe");
+            }
+          },
+          threshold:30,
+          cancelThreshold:10
+          
+        });
+      });
+}
+
 </script>
 </html>
 
