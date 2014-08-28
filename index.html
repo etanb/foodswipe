@@ -10,6 +10,7 @@
   <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
   <script type="text/javascript" src="TouchSwipe-Jquery-Plugin/jquery.touchSwipe.min.js"></script>
   <script type="text/javascript" src="jQueryRotateCompressed.js"></script>
+  <script src="jquery.ui.touch-punch.min.js"></script>
   <style>
     #food-eval-crap, #food-eval-tasty {
       margin-top: -50px;
@@ -68,6 +69,7 @@ else {
 
 function getZipcode(position) {
   $.getJSON( "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude, function( data ) {
+    console.log(data)
     var user_zipcode = data.results[0].formatted_address
     localFoods(user_zipcode)
   });
@@ -104,24 +106,13 @@ function kimonoCallback(data) {
 }
 
 $("#swipe-decline").click(function () {
-  imageAdvancer(foodIndex)
-  foodIndex++
+  swipeDecline()
 })
 
+
+
 $("#swipe-accept").click(function () {
-  var foodImage = foodImageArray[foodIndex].FoodImage.src
-  var foodText = foodImageArray[foodIndex].FoodImage.alt
-  var foodPlace = foodImageArray[foodIndex].FoodPlace[1].text
-  if ($.inArray( foodPlace, likedFoodsArray ) != -1 && likedFoodsArray.length != 0) {
-    console.log("MATCH! MATCH!")
-    $( "#myPopup" ).text(foodText)
-    $( "#myPopup" ).prepend("<img src='" + foodImage + "' />")
-    $( "#myPopup" ).popup( "open" );
-    $( "#match-selector" ).popup({ transition: "pop" });
-  } 
-  likedFoodsArray.push(foodPlace)
-  imageAdvancer(foodIndex)
-  foodIndex++
+  swipeAccept ()
 })
 
 function imageAdvancer (foodIndex) {
@@ -139,6 +130,27 @@ function foodImageCreator(foodImage) {
   $("<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>").appendTo($("#swipe-container"));
 }
 
+function swipeDecline () {
+  imageAdvancer(foodIndex)
+  foodIndex++
+}
+
+function swipeAccept () {
+  var foodImage = foodImageArray[foodIndex].FoodImage.src
+  var foodText = foodImageArray[foodIndex].FoodImage.alt
+  var foodPlace = foodImageArray[foodIndex].FoodPlace[1].text
+  if ($.inArray( foodPlace, likedFoodsArray ) != -1 && likedFoodsArray.length != 0) {
+    console.log("MATCH! MATCH!")
+    $( "#myPopup" ).text(foodText)
+    $( "#myPopup" ).prepend("<img src='" + foodImage + "' />")
+    $( "#myPopup" ).popup( "open" );
+    $( "#match-selector" ).popup({ transition: "pop" });
+  } 
+  likedFoodsArray.push(foodPlace)
+  imageAdvancer(foodIndex)
+  foodIndex++
+}
+
 // logic for image swiping
 $( "#food-eval-crap" ).hide()
 $( "#food-eval-tasty" ).hide()
@@ -151,9 +163,11 @@ function swipeAble() {
             if (direction === "left") {
               console.log("TESTING LEFT LEFT LEFT");
               $("#swipe-container").animate({right: '100%',}, 600)
+              swipeDecline().delay(300)
             } else if (direction === "right") {
               console.log("RIGHT RIGHT RITE TESTINGGGGG")
               $("#swipe-container").animate({left: '100%',}, 600)
+              swipeAccept().delay(300)
             }
           },
           swipeStatus:function(event, phase, direction, distance, duration, fingers) {
