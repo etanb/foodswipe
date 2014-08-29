@@ -15,26 +15,68 @@
     #food-eval-crap, #food-eval-tasty {
       margin-top: -50px;
     }
+    #food-header{
+      text-align: center;
+      background-color: #FD0006;
+    }
+    #food-header img{
+      display: inline-block;
+      width: 50px;
+    }
+    #food-header h1{
+      display: inline-block;
+      text-shadow: none;
+    }
+    #swipe-decline, #swipe-accept{
+      background-color: #FD0006;
+      text-shadow: none;
+      border-style: none;
+    }
+    #swipe-decline:hover, #swipe-accept:hover{
+      background-color: #BE2F33;
+      text-shadow: none;
+    }
+    #master-container{
+      background-color: black;
+    }
+    .food-image img{
+      width: 200px;
+      margin-top: -16px;
+    }
+
+    /*codepen styling for image stack SRC http://codepen.io/swapnil-mishra/pen/evGmJ*/
+
+    .stackone {
+      border: 6px solid #fff;
+      height: 200px; width: 200px;
+      margin: 50px;
+      position: relative;
+      -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8)
+    }
+
+    
   </style>
 </head> 
 <body> 
 
 <div data-role="page">
-  <div data-role="main" class="ui-content">
-    
-    
-  </div>
-  <div data-role="header">
-    <h1>FoodSwipe</h1>
+  <!-- <div data-role="main" class="ui-content">
+  </div> -->
+  <div id="food-header" data-role="header">
+    <h1><img src="http://i.imgur.com/lSvj0wY.png" /> FoodSwipe</h1>
   </div><!-- /header -->
 
   <center><div id="master-container" data-role="content">  
       <div id="swipe-container">
-        <div id="loading-screen">
-          <img src="http://i.imgur.com/Tony9TT.gif" />
-          <h3>Loading food for your fat ass...</h3>
-          <p id="food-eval-crap">Crap!</p>
-          <p id="food-eval-tasty">Tasty!</p>
+        <div class="stackone">
+          <div id="loading-screen">
+            <img src="http://i.imgur.com/Tony9TT.gif" />
+            <h3>Loading food for your fat ass...</h3>
+            <p id="food-eval-crap">Crap!</p>
+            <p id="food-eval-tasty">Tasty!</p>
+          </div>
         </div>
       </div>
   <div id="button-container">
@@ -123,11 +165,13 @@ function imageAdvancer (foodIndex) {
 function foodImageCreator(foodImage) {
 
   $(".food-image").remove()
+  $(".stackone").remove()
   $("#swipe-container").remove()
   $("#loading-screen").remove()
   $("<div id='swipe-container'></div>").insertBefore($("#button-container"))
   swipeAble()
-  $("<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>").appendTo($("#swipe-container"));
+  $("<div class='stackone'></div>").appendTo($("#swipe-container"));
+  $("<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>").appendTo($(".stackone"));
 }
 
 function swipeDecline () {
