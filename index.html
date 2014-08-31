@@ -12,8 +12,43 @@
   <script type="text/javascript" src="jQueryRotateCompressed.js"></script>
   <script src="jquery.ui.touch-punch.min.js"></script>
   <style>
-    #food-eval-crap, #food-eval-tasty {
-      margin-top: -50px;
+    #food-eval-crap {
+      text-shadow: none;
+      margin-top: -166px;
+      font-size: 76px;
+      /* Safari */
+-webkit-transform: rotate(-40deg);
+
+/* Firefox */
+-moz-transform: rotate(-40deg);
+
+/* IE */
+-ms-transform: rotate(-40deg);
+
+/* Opera */
+-o-transform: rotate(-40deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+    #food-eval-tasty{
+      text-shadow: none;
+      margin-top: -166px;
+      font-size: 76px;
+      /* Safari */
+-webkit-transform: rotate(40deg);
+
+/* Firefox */
+-moz-transform: rotate(40deg);
+
+/* IE */
+-ms-transform: rotate(40deg);
+
+/* Opera */
+-o-transform: rotate(40deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     }
     #food-header{
       text-align: center;
@@ -32,6 +67,13 @@
       text-shadow: none;
       border-style: none;
     }
+    #loading-text{
+      text-shadow: none;
+      border-style: none;
+    }
+    #loading-screen{
+      padding-top: 40px;
+    }
     #swipe-decline:hover, #swipe-accept:hover{
       background-color: #BE2F33;
       text-shadow: none;
@@ -43,14 +85,26 @@
       width: 200px;
       margin-top: -16px;
     }
+    #swipe-container{
+
+    }
+
+    #myPopup{
+      font-size: 12px;
+    }
+    #myPopup img{
+      width: 100px;
+      top: 120px;
+      left: 600px;
+    }
 
     /*codepen styling for image stack SRC http://codepen.io/swapnil-mishra/pen/evGmJ*/
 
     .stackone {
+      background-color:red;
       border: 6px solid #fff;
       height: 200px; width: 200px;
-      margin: 50px;
-      position: relative;
+      margin: 30px 0px 10px -10px;
       -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
       -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
       box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8)
@@ -73,9 +127,7 @@
         <div class="stackone">
           <div id="loading-screen">
             <img src="http://i.imgur.com/Tony9TT.gif" />
-            <h3>Loading food for your fat ass...</h3>
-            <p id="food-eval-crap">Crap!</p>
-            <p id="food-eval-tasty">Tasty!</p>
+            <h3 id="loading-text">Loading food for your fat ass...</h3>
           </div>
         </div>
       </div>
@@ -168,10 +220,16 @@ function foodImageCreator(foodImage) {
   $(".stackone").remove()
   $("#swipe-container").remove()
   $("#loading-screen").remove()
+  $("#food-eval-crap").remove()
+  $("#food-eval-tasty").remove()
   $("<div id='swipe-container'></div>").insertBefore($("#button-container"))
   swipeAble()
   $("<div class='stackone'></div>").appendTo($("#swipe-container"));
   $("<p class='food-image'><img src='" + foodImage.FoodImage.src + "'</p>").appendTo($(".stackone"));
+  $("<p id='food-eval-crap'>Crap!</p>").appendTo($(".stackone"));
+  $("<p id='food-eval-tasty'>Tasty!</p>").appendTo($(".stackone")); 
+  $("#food-eval-crap").hide()
+  $("#food-eval-tasty").hide()
 }
 
 function swipeDecline () {
@@ -183,16 +241,19 @@ function swipeAccept () {
   var foodImage = foodImageArray[foodIndex].FoodImage.src
   var foodText = foodImageArray[foodIndex].FoodImage.alt
   var foodPlace = foodImageArray[foodIndex].FoodPlace[1].text
+  console.log(foodImageArray)
+  console.log(foodImageArray[0])
   if ($.inArray( foodPlace, likedFoodsArray ) != -1 && likedFoodsArray.length != 0) {
     console.log("MATCH! MATCH!")
     $( "#myPopup" ).text(foodText)
-    $( "#myPopup" ).prepend("<img src='" + foodImage + "' />")
+    $( "#myPopup" ).prepend("<img src='" + foodImage + " width=100' />")
+    $( "#myPopup" ).prepend("<h3>MATCH! YOU WANT THAT:</h3>")
     $( "#myPopup" ).popup( "open" );
     $( "#match-selector" ).popup({ transition: "pop" });
   } 
   likedFoodsArray.push(foodPlace)
-  imageAdvancer(foodIndex)
   foodIndex++
+  imageAdvancer(foodIndex)
 }
 
 // logic for image swiping
